@@ -56,6 +56,17 @@ function updateStatusById(id: string, done: boolean) {
   update(id, { done });
 }
 
+function deleteById(id: string) {
+  const todos = read();
+
+  const todosWhithoutOne = todos.filter((item: Todo) => item.id !== id);
+
+  fs.writeFileSync(
+    DB_PATH_FILE,
+    JSON.stringify({ todos: todosWhithoutOne }, null, 2)
+  );
+}
+
 function clear_DB() {
   fs.writeFileSync(DB_PATH_FILE, "");
 }
@@ -64,6 +75,8 @@ clear_DB();
 console.log("[CRUD]");
 create("Primeira Todo");
 const secondTodo = create("Segunda Todo");
-updateContentById(secondTodo.id, "Atualizada");
-updateStatusById(secondTodo.id, true);
+const thirdTodo = create("Terceira Todo");
+updateContentById(thirdTodo.id, "Atualizada");
+updateStatusById(thirdTodo.id, true);
+deleteById(secondTodo.id);
 console.log(read());
