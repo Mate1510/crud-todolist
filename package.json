@@ -1,0 +1,17 @@
+{
+  "name": "crud-todolist",
+  "version": "1.0.0",
+  "description": "Projeto de uma To-do List com Node.js do Curso Crud Com Qualidade",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./core/index.js",
+    "dev": "nodemon ./core/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.1.9"
+  }
+}
