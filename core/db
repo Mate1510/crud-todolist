@@ -1,1 +1,16 @@
-Hello World!
+{
+  "todos": [
+    {
+      "id": "08cae437-a775-41d1-802f-12f389ddc3aa",
+      "date": "2025-03-19T16:19:35.427Z",
+      "content": "Primeira Todo",
+      "done": false
+    },
+    {
+      "id": "968415f7-ab23-449b-8feb-cc3a3cdb83b2",
+      "date": "2025-03-19T16:19:35.427Z",
+      "content": "Atualizada",
+      "done": true
+    }
+  ]
+}
