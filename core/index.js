@@ -8,4 +8,4 @@ function create(content) {
   return content;
 }
 
-console.log(create("Hello World!"));
+console.log(create("Hello World"));
