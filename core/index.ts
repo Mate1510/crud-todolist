@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import fs from "fs";
 
 const DB_PATH_FILE = "./core/db";
@@ -63,7 +64,7 @@ function deleteById(id: string) {
 
   fs.writeFileSync(
     DB_PATH_FILE,
-    JSON.stringify({ todos: todosWhithoutOne }, null, 2)
+    JSON.stringify({ todos: todosWhithoutOne }, null, 2),
   );
 }
 
