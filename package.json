@@ -4,14 +4,19 @@
   "description": "Projeto de uma To-do List com Node.js do Curso Crud Com Qualidade",
   "main": "index.js",
   "scripts": {
-    "start": "node ./core/index.js",
-    "dev": "nodemon ./core/index.js",
+    "start:crud": "npx ts-node ./core/index.ts",
+    "dev:crud": "nodemon --ext ts,tsx --exec 'npm run start:crud'",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@types/node": "^22.13.10",
     "nodemon": "^3.1.9"
+  },
+  "dependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2"
   }
 }
