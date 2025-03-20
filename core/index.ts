@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import fs from "fs";
 
 const DB_PATH_FILE = "./core/db";
@@ -25,7 +24,7 @@ function create(content: string) {
   return todo;
 }
 
-function read() {
+export function read() {
   const dbString = fs.readFileSync(DB_PATH_FILE, "utf-8");
   const db = JSON.parse(dbString || "{}");
 
@@ -72,12 +71,12 @@ function clear_DB() {
   fs.writeFileSync(DB_PATH_FILE, "");
 }
 
-clear_DB();
-console.log("[CRUD]");
-create("Primeira Todo");
-const secondTodo = create("Segunda Todo");
-const thirdTodo = create("Terceira Todo");
-updateContentById(thirdTodo.id, "Atualizada");
-updateStatusById(thirdTodo.id, true);
-deleteById(secondTodo.id);
-console.log(read());
+// clear_DB();
+// console.log("[CRUD]");
+// create("Primeira Todo");
+// const secondTodo = create("Segunda Todo");
+// const thirdTodo = create("Terceira Todo");
+// updateContentById(thirdTodo.id, "Atualizada");
+// updateStatusById(thirdTodo.id, true);
+// deleteById(secondTodo.id);
+// console.log(read());
