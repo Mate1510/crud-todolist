@@ -15,7 +15,7 @@ async function get({
 }: TodoRepositoryParams): Promise<TodoRepositoryOutput> {
   return fetch("/api/todos/").then(
     async (res): Promise<TodoRepositoryOutput> => {
-      const ALL_TODOS = JSON.parse(await res.text()).todos;
+      const ALL_TODOS = JSON.parse(await res.text()).todos as Todo[];
 
       const startIndex = (page - 1) * limit;
       const endIndex = page * limit;
@@ -40,6 +40,6 @@ export const todoRepository = {
 interface Todo {
   id: string;
   content: string;
-  data: Date;
+  date: Date;
   done: boolean;
 }
