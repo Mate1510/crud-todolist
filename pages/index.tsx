@@ -1,94 +1,108 @@
+import { useEffect, useState } from "react";
 import { GlobalStyles } from "@ui/theme/GlobalStyles";
+import { todoController } from "@ui/controller/todos";
 
 const bg = "https://mariosouto.com/cursos/crudcomqualidade/bg";
 
+interface HomeTodo {
+  id: string;
+  content: string;
+  done: boolean;
+}
+
 export default function Page() {
-return (
-<main>
-<GlobalStyles themeName="indigo" />
+  const [todos, setTodos] = useState<HomeTodo[]>([]);
 
-<header
-style={{
-backgroundImage: `url('${bg}')`,
-}}
->
-<div className="typewriter">
-<h1>O que fazer hoje?</h1>
-</div>
-<form>
-<input type="text" placeholder="Correr, Estudar..." />
-<button type="submit" aria-label="Adicionar novo item">
-+
-</button>
-</form>
-</header>
+  useEffect(() => {
+    todoController.get().then((todos) => {
+      setTodos(todos);
+    });
+  }, []);
 
-<section>
-<form>
-<input type="text" placeholder="Filtrar lista atual, ex: Dentista" />
-</form>
+  return (
+    <main>
+      <GlobalStyles themeName="indigo" />
 
-<table border={1}>
-<thead>
-<tr>
-<th align="left">
-<input type="checkbox" disabled />
-</th>
-<th align="left">Id</th>
-<th align="left">Conteúdo</th>
-<th />
-</tr>
-</thead>
+      <header
+        style={{
+          backgroundImage: `url('${bg}')`,
+        }}
+      >
+        <div className="typewriter">
+          <h1>O que fazer hoje?</h1>
+        </div>
+        <form>
+          <input type="text" placeholder="Correr, Estudar..." />
+          <button type="submit" aria-label="Adicionar novo item">
+            +
+          </button>
+        </form>
+      </header>
 
-<tbody>
-<tr>
-<td>
-<input type="checkbox" />
-</td>
-<td>d4f26</td>
-<td>
-Conteúdo de uma TODO Lorem ipsum dolor sit amet consectetur
-adipisicing elit. Eaque vero facilis obcaecati, autem aliquid
-eius! Consequatur eaque doloribus laudantium soluta optio odit,
-provident, ab voluptates doloremque voluptas recusandae
-aspernatur aperiam.
-</td>
-<td align="right">
-<button data-type="delete">Apagar</button>
-</td>
-</tr>
+      <section>
+        <form>
+          <input type="text" placeholder="Filtrar lista atual, ex: Dentista" />
+        </form>
 
-<tr>
-<td colSpan={4} align="center" style={{ textAlign: "center" }}>
-Carregando...
-</td>
-</tr>
+        <table border={1}>
+          <thead>
+            <tr>
+              <th align="left">
+                <input type="checkbox" disabled />
+              </th>
+              <th align="left">Id</th>
+              <th align="left">Conteúdo</th>
+              <th />
+            </tr>
+          </thead>
 
-<tr>
-<td colSpan={4} align="center">
-Nenhum item encontrado
-</td>
-</tr>
+          <tbody>
+            {todos.map((todo) => {
+              return (
+                <tr key={todo.id}>
+                  <td>
+                    <input type="checkbox" checked={todo.done} />
+                  </td>
+                  <td>{todo.id.substring(0, 5)}</td>
+                  <td>{todo.content}</td>
+                  <td align="right">
+                    <button data-type="delete">Apagar</button>
+                  </td>
+                </tr>
+              );
+            })}
 
-<tr>
-<td colSpan={4} align="center" style={{ textAlign: "center" }}>
-<button data-type="load-more">
-Carregar mais{" "}
-<span
-  style={{
-    display: "inline-block",
-    marginLeft: "4px",
-    fontSize: "1.2em",
-  }}
->
-  ↓
-</span>
-</button>
-</td>
-</tr>
-</tbody>
-</table>
-</section>
-</main>
-);
+            {/* <tr>
+              <td colSpan={4} align="center" style={{ textAlign: "center" }}>
+                Carregando...
+              </td>
+            </tr>
+
+            <tr>
+              <td colSpan={4} align="center">
+                Nenhum item encontrado
+              </td>
+            </tr>
+
+            <tr>
+              <td colSpan={4} align="center" style={{ textAlign: "center" }}>
+                <button data-type="load-more">
+                  Carregar mais{" "}
+                  <span
+                    style={{
+                      display: "inline-block",
+                      marginLeft: "4px",
+                      fontSize: "1.2em",
+                    }}
+                  >
+                    ↓
+                  </span>
+                </button>
+              </td>
+            </tr> */}
+          </tbody>
+        </table>
+      </section>
+    </main>
+  );
 }

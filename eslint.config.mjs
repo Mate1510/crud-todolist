@@ -52,7 +52,7 @@ export default defineConfig([
 
     rules: {
       "react/react-in-jsx-scope": "off",
-      "no-console": "error",
+      // "no-console": "error",
       "react/no-unknown-property": ["error", { ignore: ["jsx", "global"] }],
     },
   },
