@@ -1,6 +1,13 @@
-async function get() {
-  return fetch("/api/todos/").then(async (res) => {
-    return JSON.parse(await res.text()).todos;
+import { todoRepository } from "@ui/repository/todos";
+
+interface Params {
+  page?: number;
+}
+
+async function get({ page }: Params = {}) {
+  return todoRepository.get({
+    page: page ?? 1,
+    limit: 1,
   });
 }
 
