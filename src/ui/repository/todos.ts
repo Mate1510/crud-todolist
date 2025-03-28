@@ -13,21 +13,9 @@ async function get({
   page,
   limit,
 }: TodoRepositoryParams): Promise<TodoRepositoryOutput> {
-  return fetch("/api/todos/").then(
+  return fetch(`/api/todos/?page=${page}&limit=${limit}`).then(
     async (res): Promise<TodoRepositoryOutput> => {
-      const ALL_TODOS = JSON.parse(await res.text()).todos as Todo[];
-
-      const startIndex = (page - 1) * limit;
-      const endIndex = page * limit;
-      const todosByPage = ALL_TODOS.slice(startIndex, endIndex);
-
-      const totalPages = Math.ceil(ALL_TODOS.length / limit);
-
-      return {
-        todos: todosByPage,
-        total: ALL_TODOS.length,
-        pages: totalPages,
-      };
+      return JSON.parse(await res.text()) as TodoRepositoryOutput;
     },
   );
 }

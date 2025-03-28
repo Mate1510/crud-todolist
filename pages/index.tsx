@@ -11,14 +11,19 @@ interface HomeTodo {
 }
 
 export default function Page() {
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [page, setPages] = useState<number>(1);
   const [todos, setTodos] = useState<HomeTodo[]>([]);
+  const hasMorePages = totalPages > page;
 
   useEffect(() => {
-    todoController.get({ page: page }).then((todos) => {
-      setTodos(todos.todos);
+    todoController.get({ page: page }).then(({ todos, pages }) => {
+      setTotalPages(pages);
+      setTodos((oldTodos) => {
+        return [...oldTodos, ...todos];
+      });
     });
-  }, []);
+  }, [page]);
 
   return (
     <main>
@@ -85,25 +90,27 @@ export default function Page() {
               </td>
             </tr> */}
 
-            <tr>
-              <td colSpan={4} align="center" style={{ textAlign: "center" }}>
-                <button
-                  data-type="load-more"
-                  onClick={() => setPages(page + 1)}
-                >
-                  Página {page}, Carregar mais{" "}
-                  <span
-                    style={{
-                      display: "inline-block",
-                      marginLeft: "4px",
-                      fontSize: "1.2em",
-                    }}
+            {hasMorePages && (
+              <tr>
+                <td colSpan={4} align="center" style={{ textAlign: "center" }}>
+                  <button
+                    data-type="load-more"
+                    onClick={() => setPages(page + 1)}
                   >
-                    ↓
-                  </span>
-                </button>
-              </td>
-            </tr>
+                    Página {page}, Carregar mais{" "}
+                    <span
+                      style={{
+                        display: "inline-block",
+                        marginLeft: "4px",
+                        fontSize: "1.2em",
+                      }}
+                    >
+                      ↓
+                    </span>
+                  </button>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </section>
