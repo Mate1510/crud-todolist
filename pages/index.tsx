@@ -11,19 +11,33 @@ interface HomeTodo {
 }
 
 export default function Page() {
+  const [initialLoad, setInitialLoad] = useState<boolean>(true);
   const [totalPages, setTotalPages] = useState<number>(0);
+  const [search, setSearch] = useState<string>("");
   const [page, setPages] = useState<number>(1);
   const [todos, setTodos] = useState<HomeTodo[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const todosPage = todoController.filterTodosByContent<HomeTodo>(
+    todos,
+    search,
+  );
   const hasMorePages = totalPages > page;
+  const hasNoTodos = todosPage.length === 0;
 
   useEffect(() => {
-    todoController.get({ page: page }).then(({ todos, pages }) => {
-      setTotalPages(pages);
-      setTodos((oldTodos) => {
-        return [...oldTodos, ...todos];
-      });
-    });
-  }, [page]);
+    if (initialLoad) {
+      todoController
+        .get({ page: page })
+        .then(({ todos, pages }) => {
+          setTotalPages(pages);
+          setTodos(todos);
+          setInitialLoad(false);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }, []);
 
   return (
     <main>
@@ -37,8 +51,10 @@ export default function Page() {
         <div className="typewriter">
           <h1>O que fazer hoje?</h1>
         </div>
+
         <form>
           <input type="text" placeholder="Correr, Estudar..." />
+
           <button type="submit" aria-label="Adicionar novo item">
             +
           </button>
@@ -47,7 +63,11 @@ export default function Page() {
 
       <section>
         <form>
-          <input type="text" placeholder="Filtrar lista atual, ex: Dentista" />
+          <input
+            type="text"
+            placeholder="Filtrar lista atual, ex: Dentista"
+            onChange={(e) => setSearch(e.target.value)}
+          />
         </form>
 
         <table border={1}>
@@ -63,7 +83,7 @@ export default function Page() {
           </thead>
 
           <tbody>
-            {todos.map((todo) => {
+            {todosPage.map((todo) => {
               return (
                 <tr key={todo.id}>
                   <td>
@@ -78,24 +98,46 @@ export default function Page() {
               );
             })}
 
-            {/* <tr>
-              <td colSpan={4} align="center" style={{ textAlign: "center" }}>
-                Carregando...
-              </td>
-            </tr>
+            {loading && (
+              <tr>
+                <td colSpan={4} align="center" style={{ textAlign: "center" }}>
+                  Carregando...
+                </td>
+              </tr>
+            )}
 
-            <tr>
-              <td colSpan={4} align="center">
-                Nenhum item encontrado
-              </td>
-            </tr> */}
+            {hasNoTodos && !loading && (
+              <tr>
+                <td colSpan={4} align="center">
+                  Nenhum item encontrado
+                </td>
+              </tr>
+            )}
 
             {hasMorePages && (
               <tr>
                 <td colSpan={4} align="center" style={{ textAlign: "center" }}>
                   <button
                     data-type="load-more"
-                    onClick={() => setPages(page + 1)}
+                    onClick={() => {
+                      setLoading(true);
+
+                      const nextPage = page + 1;
+
+                      setPages(nextPage);
+
+                      todoController
+                        .get({ page: nextPage })
+                        .then(({ todos, pages }) => {
+                          setTotalPages(pages);
+                          setTodos((oldTodos) => {
+                            return [...oldTodos, ...todos];
+                          });
+                        })
+                        .finally(() => {
+                          setLoading(false);
+                        });
+                    }}
                   >
                     Página {page}, Carregar mais{" "}
                     <span
