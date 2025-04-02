@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { GlobalStyles } from "@ui/theme/GlobalStyles";
 import { todoController } from "@ui/controller/todos";
 
@@ -11,7 +11,7 @@ interface HomeTodo {
 }
 
 export default function Page() {
-  const [initialLoad, setInitialLoad] = useState<boolean>(true);
+  const initialLoading = useRef(false);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [search, setSearch] = useState<string>("");
   const [page, setPages] = useState<number>(1);
@@ -25,16 +25,16 @@ export default function Page() {
   const hasNoTodos = todosPage.length === 0;
 
   useEffect(() => {
-    if (initialLoad) {
+    if (!initialLoading.current) {
       todoController
         .get({ page: page })
         .then(({ todos, pages }) => {
           setTotalPages(pages);
           setTodos(todos);
-          setInitialLoad(false);
         })
         .finally(() => {
           setLoading(false);
+          initialLoading.current = true;
         });
     }
   }, []);
