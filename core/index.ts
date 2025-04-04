@@ -9,7 +9,7 @@ interface Todo {
   done: boolean;
 }
 
-function create(content: string) {
+export function create(content: string) {
   const todo: Todo = {
     id: crypto.randomUUID(),
     date: new Date().toISOString(),
