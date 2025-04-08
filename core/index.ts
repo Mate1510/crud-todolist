@@ -33,27 +33,30 @@ export function read() {
   return db.todos;
 }
 
-function update(id: string, todo: Partial<Todo>) {
+function update(id: string, todo: Partial<Todo>): Todo {
+  let updatedTodo;
   const todos = read();
 
-  const todoIndex = todos.findIndex((item: Todo) => item.id === id);
+  todos.forEach((currentTodo: Todo) => {
+    const isToUpdate = currentTodo.id === id;
+    if (isToUpdate) {
+      updatedTodo = Object.assign(currentTodo, todo);
+    }
+  });
 
-  if (todoIndex === -1) throw new Error("Todo not found");
-
-  todos[todoIndex] = {
-    ...todos[todoIndex],
-    ...todo,
-  };
+  if (!updatedTodo) throw new Error("Todo not found");
 
   fs.writeFileSync(DB_PATH_FILE, JSON.stringify({ todos }, null, 2));
+
+  return updatedTodo;
 }
 
 function updateContentById(id: string, content: string) {
   update(id, { content });
 }
 
-function updateStatusById(id: string, done: boolean) {
-  update(id, { done });
+export function updateStatusById(id: string, done: boolean) {
+  return update(id, { done });
 }
 
 function deleteById(id: string) {
