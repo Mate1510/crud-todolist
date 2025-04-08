@@ -16,10 +16,11 @@ export default function Page() {
   const [search, setSearch] = useState<string>("");
   const [page, setPages] = useState<number>(1);
   const [todos, setTodos] = useState<HomeTodo[]>([]);
+  const [newTodoContent, setNewTodoContent] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(true);
   const todosPage = todoController.filterTodosByContent<HomeTodo>(
-    todos,
     search,
+    todos,
   );
   const hasMorePages = totalPages > page;
   const hasNoTodos = todosPage.length === 0;
@@ -52,8 +53,34 @@ export default function Page() {
           <h1>O que fazer hoje?</h1>
         </div>
 
-        <form>
-          <input type="text" placeholder="Correr, Estudar..." />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault();
+            todoController.create({
+              content: newTodoContent,
+              onSuccess(newTodo: HomeTodo) {
+                setTodos((oldTodos) => {
+                  return [newTodo, ...oldTodos];
+                });
+                setNewTodoContent("");
+              },
+              onError(customMessage) {
+                alert(
+                  customMessage ||
+                    "Você precisa ter um conteúdo para criar uma TODO",
+                );
+              },
+            });
+          }}
+        >
+          <input
+            type="text"
+            value={newTodoContent}
+            placeholder="Correr, Estudar..."
+            onChange={function newTodoHandler(e) {
+              setNewTodoContent(e.target.value);
+            }}
+          />
 
           <button type="submit" aria-label="Adicionar novo item">
             +

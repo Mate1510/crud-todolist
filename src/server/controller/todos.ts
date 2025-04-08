@@ -31,13 +31,13 @@ async function create(req: NextApiRequest, res: NextApiResponse) {
     return res.status(400).json({
       error: {
         message: "Content is required.",
-        error: body.error.issues,
+        description: body.error.issues,
       },
     });
   }
 
   const newTodo = await todoRepository.createByContent(body.data.content);
-  res.status(201).json({ message: newTodo });
+  res.status(201).json({ todo: newTodo });
 }
 
 export const todoController = {

@@ -12,7 +12,7 @@ interface TodoRepositoryOutput {
 }
 
 function get({ page, limit }: TodoRepositoryParams): TodoRepositoryOutput {
-  const ALL_TODOS = read();
+  const ALL_TODOS = read().reverse();
 
   const startIndex = (page - 1) * limit;
   const endIndex = page * limit;
