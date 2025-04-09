@@ -59,15 +59,19 @@ export function updateStatusById(id: string, done: boolean) {
   return update(id, { done });
 }
 
-function deleteById(id: string) {
+export function deleteById(id: string) {
   const todos = read();
 
+  const deletedTodo = todos.filter((item: Todo) => item.id === id);
   const todosWhithoutOne = todos.filter((item: Todo) => item.id !== id);
 
   fs.writeFileSync(
     DB_PATH_FILE,
     JSON.stringify({ todos: todosWhithoutOne }, null, 2),
   );
+  console.log(deletedTodo);
+
+  return deletedTodo;
 }
 
 function clear_DB() {

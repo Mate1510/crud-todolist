@@ -66,8 +66,35 @@ async function toggleDone(req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
+async function deleteTodo(req: NextApiRequest, res: NextApiResponse) {
+  const id = req.query.id;
+
+  if (!id || typeof id != "string") {
+    return res.status(400).json({
+      error: {
+        message: "You must provide a string ID",
+      },
+    });
+  }
+
+  try {
+    const deletedTodo = await todoRepository.deleteTodo(id);
+
+    res.status(200).json({ todo: deletedTodo });
+  } catch (err) {
+    if (err instanceof Error) {
+      return res.status(404).json({
+        error: {
+          message: err.message,
+        },
+      });
+    }
+  }
+}
+
 export const todoController = {
   get,
   create,
   toggleDone,
+  deleteTodo,
 };
