@@ -114,10 +114,35 @@ export default function Page() {
               return (
                 <tr key={todo.id}>
                   <td>
-                    <input type="checkbox" checked={todo.done} />
+                    <input
+                      type="checkbox"
+                      checked={todo.done}
+                      onChange={function handleToggle() {
+                        todoController.toggleDone({
+                          id: todo.id,
+                          onError() {
+                            alert("Erro ao atualizar TODO");
+                          },
+                          updateTodoOnScreen() {
+                            setTodos((oldTodos) => {
+                              return oldTodos.map((currentTodo) => {
+                                if (currentTodo.id === todo.id) {
+                                  return {
+                                    ...currentTodo,
+                                    done: !currentTodo.done,
+                                  };
+                                }
+                                return currentTodo;
+                              });
+                            });
+                          },
+                        });
+                      }}
+                    />
                   </td>
                   <td>{todo.id.substring(0, 5)}</td>
-                  <td>{todo.content}</td>
+                  <td>{todo.done && <s>todo.content</s>}</td>
+                  <td>{!todo.done && todo.content}</td>
                   <td align="right">
                     <button data-type="delete">Apagar</button>
                   </td>

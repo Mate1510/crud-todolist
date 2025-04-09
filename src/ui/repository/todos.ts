@@ -1,6 +1,8 @@
 import { Todo, TodoSchema } from "@ui/schema/todo";
 import { z as schema } from "zod";
 
+const serverResponseSchema = schema.object({ todo: TodoSchema });
+
 interface TodoRepositoryParams {
   page: number;
   limit: number;
@@ -38,10 +40,6 @@ async function createByContent(content: string): Promise<Todo> {
     throw new Error("Failed to create TODO!");
   }
 
-  const serverResponseSchema = schema.object({
-    todo: TodoSchema,
-  });
-
   const serverResponseParsed = serverResponseSchema.safeParse(
     await response.json(),
   );
@@ -54,7 +52,29 @@ async function createByContent(content: string): Promise<Todo> {
   return todo;
 }
 
+async function toggleDone(id: string): Promise<Todo> {
+  const response = await fetch(`/api/todos/${id}/toggle-done`, {
+    method: "PUT",
+  });
+
+  if (!response.ok) {
+    throw new Error("Server Error");
+  }
+
+  const serverResponseParsed = serverResponseSchema.safeParse(
+    await response.json(),
+  );
+
+  if (!serverResponseParsed.success) {
+    throw new Error("Failed to update TODO");
+  }
+
+  const updatedTodo = serverResponseParsed.data.todo;
+  return updatedTodo;
+}
+
 export const todoRepository = {
   get,
   createByContent,
+  toggleDone,
 };

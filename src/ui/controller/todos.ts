@@ -50,8 +50,26 @@ function create({ content, onSuccess, onError }: createParams) {
     });
 }
 
+interface toggleDoneParams {
+  id: string;
+  updateTodoOnScreen: () => void;
+  onError: () => void;
+}
+
+function toggleDone({ id, onError, updateTodoOnScreen }: toggleDoneParams) {
+  todoRepository
+    .toggleDone(id)
+    .then(() => {
+      updateTodoOnScreen();
+    })
+    .catch(() => {
+      onError();
+    });
+}
+
 export const todoController = {
   get,
   filterTodosByContent,
   create,
+  toggleDone,
 };

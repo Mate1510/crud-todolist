@@ -148,19 +148,19 @@
       "id": "931cb43f-c3e9-4310-96e0-67841529a675",
       "date": "2025-04-08T18:29:00.694Z",
       "content": "Vigésima Quinta",
-      "done": false
+      "done": true
     },
     {
       "id": "0b7d661c-881e-438f-a6bb-caeea88c791f",
       "date": "2025-04-08T18:29:03.829Z",
       "content": "Vigésima Sexta",
-      "done": false
+      "done": true
     },
     {
       "id": "d1487b28-d59d-4f1f-b200-4c6f260e9216",
       "date": "2025-04-08T18:29:26.696Z",
       "content": "Vigésima Sétima Todo",
-      "done": false
+      "done": true
     }
   ]
 }
