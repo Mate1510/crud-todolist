@@ -52,15 +52,32 @@ function create({ content, onSuccess, onError }: createParams) {
 
 interface toggleDoneParams {
   id: string;
-  updateTodoOnScreen: () => void;
+  updateTodosOnScreen: () => void;
   onError: () => void;
 }
 
-function toggleDone({ id, onError, updateTodoOnScreen }: toggleDoneParams) {
+function toggleDone({ id, onError, updateTodosOnScreen }: toggleDoneParams) {
   todoRepository
     .toggleDone(id)
     .then(() => {
-      updateTodoOnScreen();
+      updateTodosOnScreen();
+    })
+    .catch(() => {
+      onError();
+    });
+}
+
+interface deleteParams {
+  id: string;
+  updateTodosOnScreen: () => void;
+  onError: () => void;
+}
+
+function deleteTodoById({ id, onError, updateTodosOnScreen }: deleteParams) {
+  todoRepository
+    .deleteTodoById(id)
+    .then(() => {
+      updateTodosOnScreen();
     })
     .catch(() => {
       onError();
@@ -72,4 +89,5 @@ export const todoController = {
   filterTodosByContent,
   create,
   toggleDone,
+  deleteTodoById,
 };

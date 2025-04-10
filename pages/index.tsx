@@ -117,13 +117,13 @@ export default function Page() {
                     <input
                       type="checkbox"
                       checked={todo.done}
-                      onChange={function handleToggle() {
+                      onClick={function handleToggle() {
                         todoController.toggleDone({
                           id: todo.id,
                           onError() {
                             alert("Erro ao atualizar TODO");
                           },
-                          updateTodoOnScreen() {
+                          updateTodosOnScreen() {
                             setTodos((oldTodos) => {
                               return oldTodos.map((currentTodo) => {
                                 if (currentTodo.id === todo.id) {
@@ -141,10 +141,32 @@ export default function Page() {
                     />
                   </td>
                   <td>{todo.id.substring(0, 5)}</td>
-                  <td>{todo.done && <s>todo.content</s>}</td>
+                  <td>{todo.done && <s>{todo.content}</s>}</td>
                   <td>{!todo.done && todo.content}</td>
                   <td align="right">
-                    <button data-type="delete">Apagar</button>
+                    <button
+                      data-type="delete"
+                      onClick={function handleDelete() {
+                        todoController.deleteTodoById({
+                          id: todo.id,
+                          onError() {
+                            alert("Erro ao deletar TODO");
+                          },
+                          updateTodosOnScreen() {
+                            setTodos((oldTodos) => {
+                              return oldTodos.map((currentTodo) => {
+                                if (currentTodo.id !== todo.id) {
+                                  return { ...currentTodo };
+                                }
+                                return currentTodo;
+                              });
+                            });
+                          },
+                        });
+                      }}
+                    >
+                      Apagar
+                    </button>
                   </td>
                 </tr>
               );

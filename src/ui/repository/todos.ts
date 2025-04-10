@@ -53,7 +53,7 @@ async function createByContent(content: string): Promise<Todo> {
 }
 
 async function toggleDone(id: string): Promise<Todo> {
-  const response = await fetch(`/api/todos/${id}/toggle-done`, {
+  const response = await fetch(`/api/todos/${id}/`, {
     method: "PUT",
   });
 
@@ -73,8 +73,30 @@ async function toggleDone(id: string): Promise<Todo> {
   return updatedTodo;
 }
 
+async function deleteTodoById(id: string) {
+  const response = await fetch(`/api/todos/${id}/`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error("Server Error");
+  }
+
+  const serverResponseParsed = serverResponseSchema.safeParse(
+    await response.json(),
+  );
+
+  if (!serverResponseParsed.success) {
+    throw new Error("Failed to delete TODO)");
+  }
+
+  const deletedTodo = serverResponseParsed.data.todo;
+  return deletedTodo;
+}
+
 export const todoRepository = {
   get,
   createByContent,
   toggleDone,
+  deleteTodoById,
 };
