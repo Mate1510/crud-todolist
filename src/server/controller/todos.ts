@@ -1,3 +1,4 @@
+import { HttpNotFound } from "@server/infra/errors";
 import { todoRepository } from "@server/repository/todos";
 import { NextApiRequest, NextApiResponse } from "next";
 import { z as schema } from "zod";
@@ -41,9 +42,12 @@ async function create(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function toggleDone(req: NextApiRequest, res: NextApiResponse) {
-  const id = req.query.id;
+  const querySchema = schema.object({
+    id: schema.string().uuid().nonempty(),
+  });
+  const parsedQuery = querySchema.safeParse(req.query);
 
-  if (!id || typeof id !== "string") {
+  if (!parsedQuery.success) {
     return res.status(400).json({
       error: {
         message: "You must provide a string ID",
@@ -52,6 +56,7 @@ async function toggleDone(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
+    const id = parsedQuery.data.id;
     const updatedTodo = await todoRepository.toggleDone(id);
 
     res.status(200).json({ todo: updatedTodo });
@@ -67,9 +72,12 @@ async function toggleDone(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function deleteTodo(req: NextApiRequest, res: NextApiResponse) {
-  const id = req.query.id;
+  const querySchema = schema.object({
+    id: schema.string().uuid().nonempty(),
+  });
+  const parsedQuery = querySchema.safeParse(req.query);
 
-  if (!id || typeof id != "string") {
+  if (!parsedQuery.success) {
     return res.status(400).json({
       error: {
         message: "You must provide a string ID",
@@ -78,17 +86,23 @@ async function deleteTodo(req: NextApiRequest, res: NextApiResponse) {
   }
 
   try {
-    const deletedTodo = await todoRepository.deleteTodo(id);
-
-    res.status(200).json({ todo: deletedTodo });
+    const id = parsedQuery.data.id;
+    await todoRepository.deleteTodo(id);
+    res.status(204).end();
   } catch (err) {
-    if (err instanceof Error) {
-      return res.status(404).json({
+    if (err instanceof HttpNotFound) {
+      return res.status(err.status).json({
         error: {
           message: err.message,
         },
       });
     }
+
+    return res.status(500).json({
+      error: {
+        message: "Internal Server Error",
+      },
+    });
   }
 }
 
